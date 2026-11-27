@@ -18,7 +18,15 @@ $duration      = get_post_meta( $program_id, 'duration', true );
 ?>
 
 <article class="program-card">
-	<a href="<?php echo esc_url( get_permalink( $program_id ) ); ?>">
+	<a
+	href="<?php echo esc_url( get_permalink( $program_id ) ); ?>"
+	data-track="<?php echo university_program_track_attr(
+		'link',
+		'program-card',
+		'programme-listing',
+		'componentCard'
+	); ?>"
+>
 		<?php if ( has_post_thumbnail( $program_id ) ) : ?>
 			<div class="program-card__image">
 				<?php
