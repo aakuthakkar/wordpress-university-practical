@@ -1,4 +1,4 @@
-/**
+<?php /**
  * Register the Programs post type and Program Type taxonomy.
  */
 function university_register_programs() {
@@ -61,3 +61,4 @@ function university_create_program_types() {
 	}
 }
 add_action( 'init', 'university_create_program_types', 20 );
+?>
