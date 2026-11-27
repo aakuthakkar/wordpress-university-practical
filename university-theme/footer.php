@@ -88,7 +88,7 @@
 			<label class="wide">
 				I am enquiring as <b>*</b>
 
-				<select required>
+				<select data-track="<?php echo university_program_track_attr( 'button', 'enquiry-role', 'enquiry-form', 'componentSelect' ); ?>" required>
 					<option value="">Select an option</option>
 					<option>Prospective student</option>
 					<option>Parent or guardian</option>
@@ -99,7 +99,7 @@
 			<label>
 				Level of interest <b>*</b>
 
-				<select required>
+				<select data-track="<?php echo university_program_track_attr( 'button', 'enquiry-level', 'enquiry-form', 'componentSelect' ); ?>" required>
 					<option value="">Select an option</option>
 					<option>Undergraduate</option>
 					<option>Postgraduate</option>
@@ -109,7 +109,7 @@
 			<label>
 				Programme of interest <b>*</b>
 
-				<select required>
+				<select data-track="<?php echo university_program_track_attr( 'button', 'enquiry-programme', 'enquiry-form', 'componentSelect' ); ?>" required>
 					<option value="">Select an option</option>
 					<option>Computer Applications</option>
 					<option>Engineering</option>
@@ -120,7 +120,7 @@
 			<label>
 				First name <b>*</b>
 
-				<input
+				<input data-track="<?php echo university_program_track_attr( 'button', 'enquiry-first-name', 'enquiry-form', 'componentInput' ); ?>"
 					type="text"
 					autocomplete="given-name"
 					required
@@ -130,7 +130,7 @@
 			<label>
 				Last name <b>*</b>
 
-				<input
+				<input data-track="<?php echo university_program_track_attr( 'button', 'enquiry-last-name', 'enquiry-form', 'componentInput' ); ?>"
 					type="text"
 					autocomplete="family-name"
 					required
@@ -140,7 +140,7 @@
 			<label>
 				Country <b>*</b>
 
-				<select required>
+				<select data-track="<?php echo university_program_track_attr( 'button', 'enquiry-country', 'enquiry-form', 'componentSelect' ); ?>" required>
 					<option value="">Select an option</option>
 					<option>India</option>
 					<option>Other</option>
@@ -150,7 +150,7 @@
 			<label>
 				City <b>*</b>
 
-				<input
+				<input data-track="<?php echo university_program_track_attr( 'button', 'enquiry-city', 'enquiry-form', 'componentInput' ); ?>"
 					type="text"
 					autocomplete="address-level2"
 					required
@@ -160,7 +160,7 @@
 			<label>
 				Phone number <b>*</b>
 
-				<input
+				<input data-track="<?php echo university_program_track_attr( 'button', 'enquiry-phone', 'enquiry-form', 'componentInput' ); ?>"
 					type="tel"
 					placeholder="+91"
 					autocomplete="tel"
@@ -171,7 +171,7 @@
 			<label>
 				Email <b>*</b>
 
-				<input
+				<input data-track="<?php echo university_program_track_attr( 'button', 'enquiry-email', 'enquiry-form', 'componentInput' ); ?>"
 					type="email"
 					autocomplete="email"
 					required
