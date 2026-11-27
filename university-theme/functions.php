@@ -21,9 +21,7 @@ function university_register_program_meta() {
 				'default'           => '',
 				'show_in_rest'      => true,
 				'sanitize_callback' => 'sanitize_text_field',
-				'auth_callback'     => function () {
-					return current_user_can( 'edit_posts' );
-				},
+				'auth_callback'     => 'university_can_edit_program_meta',
 			)
 		);
 	}
@@ -56,9 +54,7 @@ function university_register_program_meta() {
 					),
 				),
 			),
-			'auth_callback' => function () {
-				return current_user_can( 'edit_posts' );
-			},
+			'auth_callback' => 'university_can_edit_program_meta',
 		)
 	);
 }
@@ -660,4 +656,17 @@ function university_sanitize_program_sections( $sections ) {
 	}
 
 	return $clean_sections;
+}
+
+/**
+ * Check whether the current user can edit the specific program.
+ *
+ * @param bool   $allowed  Existing permission value.
+ * @param string $meta_key Meta field name.
+ * @param int    $post_id  Program ID.
+ * @param int    $user_id  User requesting access.
+ * @return bool
+ */
+function university_can_edit_program_meta( $allowed, $meta_key, $post_id, $user_id ) {
+	return user_can( $user_id, 'edit_post', $post_id );
 }
