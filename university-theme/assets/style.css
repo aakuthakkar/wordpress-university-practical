@@ -124,3 +124,121 @@
 .program-filter__empty {
 	margin: 20px 0;
 }
+/* Program archive cards */
+.program-archive .program-grid {
+	display: grid;
+	grid-template-columns: repeat(3, minmax(0, 1fr));
+	gap: 24px;
+}
+
+/* Category view: two cards per row, like the Figma screen */
+.program-archive[data-filter="undergraduate"] .program-grid,
+.program-archive[data-filter="postgraduate"] .program-grid {
+	grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.program-archive .program-card {
+	background: #00394d;
+	border: 0;
+	border-radius: 10px;
+	color: #fff;
+	overflow: hidden;
+	padding: 0 0 22px;
+}
+
+.program-archive .program-card > a {
+	display: block;
+	color: inherit;
+	text-decoration: none;
+}
+
+.program-archive .program-card__image {
+	width: 100%;
+	aspect-ratio: 1.87 / 1;
+	overflow: hidden;
+	background: #e8eef0;
+}
+
+.program-archive .program-card__image img {
+	display: block;
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+	object-position: center;
+}
+
+.program-archive .program-card h3 {
+	color: #ffca28;
+	font-size: 21px;
+	line-height: 1.3;
+	margin: 20px 20px 16px;
+}
+
+.program-archive .program-card h3::after {
+	content: "";
+	display: block;
+	width: 44px;
+	height: 3px;
+	margin-top: 9px;
+	background: #477789;
+}
+
+.program-archive .program-card p {
+	margin: 10px 20px;
+	color: #fff;
+	font-size: 14px;
+	line-height: 1.5;
+}
+
+.program-archive .program-card a:focus-visible {
+	outline: 3px solid #ffca28;
+	outline-offset: -3px;
+}
+
+/* Tablet */
+@media (max-width: 900px) {
+	.program-archive .program-grid {
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+	}
+}
+
+/* Mobile */
+@media (max-width: 600px) {
+	.program-archive .program-grid,
+	.program-archive[data-filter="undergraduate"] .program-grid,
+	.program-archive[data-filter="postgraduate"] .program-grid {
+		grid-template-columns: 1fr;
+	}
+}
+.program-detail {
+	width: min(1100px, 90%);
+	margin: 40px auto 70px;
+}
+
+.program-breadcrumbs {
+	margin-bottom: 28px;
+	font-size: 14px;
+}
+
+.program-featured-image img,
+.program-section-image img {
+	display: block;
+	max-width: 100%;
+	height: auto;
+	border-radius: 8px;
+}
+
+.program-content-section {
+	margin: 32px 0;
+}
+
+.program-detail-actions {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 12px;
+	margin: 30px 0;
+}
+
+.program-back-link {
+	margin-top: 30px;
+}

@@ -54,6 +54,29 @@ foreach ( $types as $type_slug ) {
 	$counts['all']      += $query->post_count;
 }
 
+/*
+ * Select the current program type when a category URL loads.
+ */
+$initial_filter = 'all';
+
+if ( is_tax( 'program-type' ) ) {
+	$current_term = get_queried_object();
+
+	if (
+		$current_term &&
+		isset( $current_term->slug ) &&
+		in_array( $current_term->slug, $types, true )
+	) {
+		$initial_filter = $current_term->slug;
+	}
+}
+
+$headings = array(
+	'all'           => 'All Programmes',
+	'undergraduate' => 'Undergraduate Programmes',
+	'postgraduate'  => 'Postgraduate Programmes',
+);
+
 $all_url = get_post_type_archive_link( 'program' );
 
 $urls = array(
@@ -68,7 +91,7 @@ $urls = array(
 wp_interactivity_state(
 	'university/program-filter',
 	array(
-		'selected' => 'all',
+		'selected' => $initial_filter,
 		'loading'  => false,
 		'counts'   => $counts,
 		'urls'     => $urls,
@@ -80,39 +103,61 @@ get_header();
 
 <main
 	class="program-archive"
+	data-filter="<?php echo esc_attr( $initial_filter ); ?>"
 	data-wp-interactive="university/program-filter"
+	data-wp-bind--data-filter="state.selected"
 	data-wp-on-window--popstate="actions.syncFromUrl"
 >
 
-	<h1>All Programmes</h1>
+<h1 data-wp-text="state.heading">
+	<?php echo esc_html( $headings[ $initial_filter ] ); ?>
+</h1>
 
 	<nav class="program-filter" aria-label="Filter programmes">
 
-		<a
-			href="<?php echo esc_url( $urls['all'] ); ?>"
-			<?php echo wp_interactivity_data_wp_context( array( 'type' => 'all' ) ); ?>
-			data-wp-on--click="actions.filter"
-		>
-			All
-		</a>
+	<a
+		href="<?php echo esc_url( $urls['all'] ); ?>"
+		<?php echo wp_interactivity_data_wp_context( array( 'type' => 'all' ) ); ?>
+		data-wp-on--click="actions.filter"
+		data-track="<?php echo university_program_track_attr(
+			'link',
+			'filter-all',
+			'programme-listing',
+			'componentLink'
+		); ?>"
+	>
+		All
+	</a>
 
-		<a
-			href="<?php echo esc_url( $urls['undergraduate'] ); ?>"
-			<?php echo wp_interactivity_data_wp_context( array( 'type' => 'undergraduate' ) ); ?>
-			data-wp-on--click="actions.filter"
-		>
-			Undergraduate
-		</a>
+	<a
+		href="<?php echo esc_url( $urls['undergraduate'] ); ?>"
+		<?php echo wp_interactivity_data_wp_context( array( 'type' => 'undergraduate' ) ); ?>
+		data-wp-on--click="actions.filter"
+		data-track="<?php echo university_program_track_attr(
+			'link',
+			'filter-undergraduate',
+			'programme-listing',
+			'componentLink'
+		); ?>"
+	>
+		Undergraduate
+	</a>
 
-		<a
-			href="<?php echo esc_url( $urls['postgraduate'] ); ?>"
-			<?php echo wp_interactivity_data_wp_context( array( 'type' => 'postgraduate' ) ); ?>
-			data-wp-on--click="actions.filter"
-		>
-			Postgraduate
-		</a>
+	<a
+		href="<?php echo esc_url( $urls['postgraduate'] ); ?>"
+		<?php echo wp_interactivity_data_wp_context( array( 'type' => 'postgraduate' ) ); ?>
+		data-wp-on--click="actions.filter"
+		data-track="<?php echo university_program_track_attr(
+			'link',
+			'filter-postgraduate',
+			'programme-listing',
+			'componentLink'
+		); ?>"
+	>
+		Postgraduate
+	</a>
 
-	</nav>
+</nav>
 
 	<p
 		class="program-filter__loading"
@@ -138,10 +183,13 @@ get_header();
 		?>
 
 		<section
-			class="program-group"
-			<?php echo wp_interactivity_data_wp_context( array( 'type' => $type_slug ) ); ?>
-			data-wp-bind--hidden="state.isHidden"
-		>
+	class="program-group"
+	<?php echo wp_interactivity_data_wp_context( array( 'type' => $type_slug ) ); ?>
+	data-wp-bind--hidden="state.isHidden"
+	<?php if ( 'all' !== $initial_filter && $initial_filter !== $type_slug ) : ?>
+		hidden
+	<?php endif; ?>
+>
 
 			<h2><?php echo esc_html( $term->name ); ?></h2>
 

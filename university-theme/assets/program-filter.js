@@ -2,8 +2,20 @@ import { store, getContext, withSyncEvent } from '@wordpress/interactivity';
 
 const { state } = store( 'university/program-filter', {
 	state: {
-		selected: 'all',
+		
 		loading: false,
+    get heading() {
+	if ( state.selected === 'undergraduate' ) {
+		return 'Undergraduate Programmes';
+	}
+
+	if ( state.selected === 'postgraduate' ) {
+		return 'Postgraduate Programmes';
+	}
+
+	return 'All Programmes';
+},
+
 
 		get isHidden() {
 			const context = getContext();
