@@ -39,6 +39,7 @@ function university_register_program_meta() {
 					'type'  => 'array',
 					'items' => array(
 						'type'       => 'object',
+						'required'   => array( 'title', 'description' ),
 						'properties' => array(
 							'title'       => array(
 								'type' => 'string',
@@ -670,3 +671,94 @@ function university_sanitize_program_sections( $sections ) {
 function university_can_edit_program_meta( $allowed, $meta_key, $post_id, $user_id ) {
 	return user_can( $user_id, 'edit_post', $post_id );
 }
+
+
+/**
+ * Reserve category route segments for program type archives.
+ * WordPress will assign a unique suffix when a program is published.
+ *
+ * @param bool   $bad_slug Existing result.
+ * @param string $slug     Proposed slug.
+ * @param string $post_type Post type.
+ * @return bool
+ */
+function university_reserve_program_type_slugs( $bad_slug, $slug, $post_type ) {
+	if ( 'program' === $post_type && in_array( $slug, array( 'undergraduate', 'postgraduate' ), true ) ) {
+		return true;
+	}
+
+	return $bad_slug;
+}
+add_filter( 'wp_unique_post_slug_is_bad_flat_slug', 'university_reserve_program_type_slugs', 10, 3 );
+
+/**
+ * Validate program sections before a REST editor save.
+ * WordPress handles REST cookie authentication and nonce verification.
+ *
+ * @param stdClass|WP_Error $prepared_post Prepared program.
+ * @param WP_REST_Request   $request Incoming request.
+ * @return stdClass|WP_Error
+ */
+function university_validate_program_sections( $prepared_post, $request ) {
+	$meta = $request->get_param( 'meta' );
+
+	if ( ! is_array( $meta ) || ! array_key_exists( 'content_sections', $meta ) ) {
+		return $prepared_post;
+	}
+
+	$sections = $meta['content_sections'];
+	if ( ! is_array( $sections ) ) {
+		return new WP_Error( 'invalid_program_sections', 'Content sections must be an array.', array( 'status' => 400 ) );
+	}
+
+	foreach ( $sections as $index => $section ) {
+		if ( ! is_array( $section ) || ! isset( $section['title'], $section['description'] ) || ! is_string( $section['title'] ) || ! is_string( $section['description'] ) ) {
+			return new WP_Error( 'invalid_program_section', 'Each content section needs a title and description.', array( 'status' => 400 ) );
+		}
+
+		if ( '' === trim( sanitize_text_field( $section['title'] ) ) || '' === trim( sanitize_textarea_field( $section['description'] ) ) ) {
+			return new WP_Error( 'empty_program_section', 'Each content section needs a non-empty title and description.', array( 'status' => 400 ) );
+		}
+
+		if ( isset( $section['image'] ) ) {
+			$image_id = $section['image'];
+			if ( ! is_int( $image_id ) || $image_id < 0 || ( $image_id > 0 && ! wp_attachment_is_image( $image_id ) ) ) {
+				return new WP_Error( 'invalid_program_section_image', 'The section image must be a valid image attachment.', array( 'status' => 400 ) );
+			}
+		}
+	}
+
+	return $prepared_post;
+}
+add_filter( 'rest_pre_insert_program', 'university_validate_program_sections', 10, 2 );
+
+/**
+ * Track links and buttons added through the program content editor.
+ * Do not overwrite tracking already set by an author or another block.
+ *
+ * @param string $content Rendered program content.
+ * @return string
+ */
+function university_track_program_content( $content ) {
+	if ( ! is_singular( 'program' ) || ! in_the_loop() || ! is_main_query() || ! class_exists( 'WP_HTML_Tag_Processor' ) ) {
+		return $content;
+	}
+
+	$tags = new WP_HTML_Tag_Processor( $content );
+	while ( $tags->next_tag() ) {
+		$tag = $tags->get_tag();
+		if ( ! in_array( $tag, array( 'A', 'BUTTON' ), true ) || null !== $tags->get_attribute( 'data-track' ) ) {
+			continue;
+		}
+		if ( 'A' === $tag && null === $tags->get_attribute( 'href' ) ) {
+			continue;
+		}
+		$event = 'A' === $tag ? 'link' : 'button';
+		$label = 'A' === $tag ? 'content-link' : 'content-button';
+		$component = 'A' === $tag ? 'componentLink' : 'componentButton';
+		$encoded = university_program_track_attr( $event, $label, 'programme-content', $component );
+		$tags->set_attribute( 'data-track', html_entity_decode( $encoded, ENT_QUOTES | ENT_HTML5, 'UTF-8' ) );
+	}
+	return $tags->get_updated_html();
+}
+add_filter( 'the_content', 'university_track_program_content', 20 );
