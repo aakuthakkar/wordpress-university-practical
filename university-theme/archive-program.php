@@ -1,56 +1,157 @@
 <?php
 /**
- * Program archive template.
+ * Program archive with Interactivity API filtering.
  *
  * @package University_Theme
  */
 
-get_header();
-
-$program_types = array(
+$types = array(
 	'undergraduate',
 	'postgraduate',
 );
+
+$program_queries = array();
+
+$counts = array(
+	'all'           => 0,
+	'undergraduate' => 0,
+	'postgraduate'  => 0,
+);
+
+/**
+ * Prepare the programs for each type.
+ */
+foreach ( $types as $type_slug ) {
+	$term = get_term_by( 'slug', $type_slug, 'program-type' );
+
+	if ( ! $term || is_wp_error( $term ) ) {
+		continue;
+	}
+
+	$query = new WP_Query(
+		array(
+			'post_type'      => 'program',
+			'post_status'    => 'publish',
+			'posts_per_page' => -1,
+			'orderby'        => 'title',
+			'order'          => 'ASC',
+			'tax_query'      => array(
+				array(
+					'taxonomy' => 'program-type',
+					'field'    => 'term_id',
+					'terms'    => $term->term_id,
+				),
+			),
+		)
+	);
+
+	$program_queries[ $type_slug ] = array(
+		'term'  => $term,
+		'query' => $query,
+	);
+
+	$counts[ $type_slug ] = $query->post_count;
+	$counts['all']      += $query->post_count;
+}
+
+$all_url = get_post_type_archive_link( 'program' );
+
+$urls = array(
+	'all'           => $all_url,
+	'undergraduate' => home_url( '/programmes/undergraduate/' ),
+	'postgraduate'  => home_url( '/programmes/postgraduate/' ),
+);
+
+/**
+ * Pass initial data to the Interactivity API store.
+ */
+wp_interactivity_state(
+	'university/program-filter',
+	array(
+		'selected' => 'all',
+		'loading'  => false,
+		'counts'   => $counts,
+		'urls'     => $urls,
+	)
+);
+
+get_header();
 ?>
 
-<main class="program-archive">
+<main
+	class="program-archive"
+	data-wp-interactive="university/program-filter"
+	data-wp-on-window--popstate="actions.syncFromUrl"
+>
+
 	<h1>All Programmes</h1>
 
-	<?php foreach ( $program_types as $type_slug ) : ?>
+	<nav class="program-filter" aria-label="Filter programmes">
+
+		<a
+			href="<?php echo esc_url( $urls['all'] ); ?>"
+			<?php echo wp_interactivity_data_wp_context( array( 'type' => 'all' ) ); ?>
+			data-wp-on--click="actions.filter"
+		>
+			All
+		</a>
+
+		<a
+			href="<?php echo esc_url( $urls['undergraduate'] ); ?>"
+			<?php echo wp_interactivity_data_wp_context( array( 'type' => 'undergraduate' ) ); ?>
+			data-wp-on--click="actions.filter"
+		>
+			Undergraduate
+		</a>
+
+		<a
+			href="<?php echo esc_url( $urls['postgraduate'] ); ?>"
+			<?php echo wp_interactivity_data_wp_context( array( 'type' => 'postgraduate' ) ); ?>
+			data-wp-on--click="actions.filter"
+		>
+			Postgraduate
+		</a>
+
+	</nav>
+
+	<p
+		class="program-filter__loading"
+		data-wp-bind--hidden="!state.loading"
+		hidden
+	>
+		Loading programmes…
+	</p>
+
+	<p
+		class="program-filter__empty"
+		data-wp-bind--hidden="!state.isEmpty"
+		hidden
+	>
+		No programmes found for this category.
+	</p>
+
+	<?php foreach ( $program_queries as $type_slug => $program_data ) : ?>
 
 		<?php
-		$term = get_term_by( 'slug', $type_slug, 'program-type' );
-
-		if ( ! $term || is_wp_error( $term ) ) {
-			continue;
-		}
-
-		$programs = new WP_Query(
-			array(
-				'post_type'      => 'program',
-				'post_status'    => 'publish',
-				'posts_per_page' => -1,
-				'orderby'        => 'title',
-				'order'          => 'ASC',
-				'tax_query'      => array(
-					array(
-						'taxonomy' => 'program-type',
-						'field'    => 'term_id',
-						'terms'    => $term->term_id,
-					),
-				),
-			)
-		);
+		$term  = $program_data['term'];
+		$query = $program_data['query'];
 		?>
 
-		<section class="program-group">
+		<section
+			class="program-group"
+			<?php echo wp_interactivity_data_wp_context( array( 'type' => $type_slug ) ); ?>
+			data-wp-bind--hidden="state.isHidden"
+		>
+
 			<h2><?php echo esc_html( $term->name ); ?></h2>
 
-			<?php if ( $programs->have_posts() ) : ?>
+			<?php if ( $query->have_posts() ) : ?>
+
 				<div class="program-grid">
-					<?php while ( $programs->have_posts() ) : ?>
+
+					<?php while ( $query->have_posts() ) : ?>
 						<?php
-						$programs->the_post();
+						$query->the_post();
 
 						get_template_part(
 							'template-parts/program',
@@ -61,15 +162,21 @@ $program_types = array(
 						);
 						?>
 					<?php endwhile; ?>
+
 				</div>
+
 			<?php else : ?>
-				<p>No programs available in this category yet.</p>
+
+				<p>No programmes available in this category yet.</p>
+
 			<?php endif; ?>
 
-			<?php wp_reset_postdata(); ?>
 		</section>
 
+		<?php wp_reset_postdata(); ?>
+
 	<?php endforeach; ?>
+
 </main>
 
 <?php

@@ -96,3 +96,31 @@
 	height: auto;
 	object-fit: contain;
 }
+/* Program filter */
+.program-filter {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 12px;
+	margin: 24px 0 32px;
+}
+
+.program-filter a {
+	display: inline-block;
+	padding: 10px 18px;
+	border: 1px solid #00394d;
+	border-radius: 24px;
+	color: #00394d;
+	font-weight: bold;
+	text-decoration: none;
+}
+
+.program-filter a:hover,
+.program-filter a:focus-visible {
+	background: #00394d;
+	color: #fff;
+}
+
+.program-filter__loading,
+.program-filter__empty {
+	margin: 20px 0;
+}

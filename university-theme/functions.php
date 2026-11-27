@@ -242,3 +242,27 @@ function university_enable_featured_images() {
 	add_theme_support( 'post-thumbnails' );
 }
 add_action( 'after_setup_theme', 'university_enable_featured_images' );
+
+/**
+ * Load the Interactivity API module on the program archive.
+ */
+function university_enqueue_program_filter() {
+	if ( ! is_post_type_archive( 'program' ) ) {
+		return;
+	}
+
+	$script_path = get_template_directory()
+		. '/assets/program-filter.js';
+
+	if ( ! file_exists( $script_path ) ) {
+		return;
+	}
+
+	wp_enqueue_script_module(
+		'university-program-filter',
+		get_template_directory_uri() . '/assets/program-filter.js',
+		array( '@wordpress/interactivity' ),
+		filemtime( $script_path )
+	);
+}
+add_action( 'wp_enqueue_scripts', 'university_enqueue_program_filter' );
