@@ -126,3 +126,41 @@ function university_create_program_types() {
 	}
 }
 add_action( 'init', 'university_create_program_types', 20 );
+
+
+/**
+ * Load the custom Program fields in the block editor.
+ */
+function university_enqueue_program_editor_assets() {
+	$screen = get_current_screen();
+
+	if ( ! $screen || 'program' !== $screen->post_type ) {
+		return;
+	}
+
+	$asset_path = get_template_directory() . '/build/admin.asset.php';
+
+	if ( ! file_exists( $asset_path ) ) {
+		return;
+	}
+
+	$asset = require $asset_path;
+
+	wp_enqueue_media();
+
+	wp_enqueue_script(
+		'university-program-admin',
+		get_template_directory_uri() . '/build/admin.js',
+		$asset['dependencies'],
+		$asset['version'],
+		true
+	);
+
+	wp_enqueue_style(
+		'university-program-admin',
+		get_template_directory_uri() . '/build/admin.css',
+		array(),
+		$asset['version']
+	);
+}
+add_action( 'enqueue_block_editor_assets', 'university_enqueue_program_editor_assets' );

@@ -1,0 +1,24 @@
+{
+  "name": "wordpress-university-practical",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "wp-scripts build university-theme/src/admin.js --output-path=university-theme/build"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/aakuthakkar/wordpress-university-practical.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/aakuthakkar/wordpress-university-practical/issues"
+  },
+  "homepage": "https://github.com/aakuthakkar/wordpress-university-practical#readme",
+  "devDependencies": {
+    "@wordpress/scripts": "^37.2.0"
+  }
+}
