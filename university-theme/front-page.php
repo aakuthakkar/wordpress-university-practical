@@ -12,7 +12,6 @@ $theme_url = get_template_directory_uri();
 
 <main>
 
-	<!-- Hero section -->
 	<section
 		class="hero"
 		aria-label="Featured slideshow"
@@ -28,6 +27,12 @@ $theme_url = get_template_directory_uri();
 			type="button"
 			class="hero-arrow hero-prev"
 			aria-label="Previous slide"
+			data-track="<?php echo university_program_track_attr(
+				'button',
+				'previous-slide',
+				'home-hero',
+				'componentButton'
+			); ?>"
 		>
 			&#8249;
 		</button>
@@ -36,6 +41,12 @@ $theme_url = get_template_directory_uri();
 			type="button"
 			class="hero-arrow hero-next"
 			aria-label="Next slide"
+			data-track="<?php echo university_program_track_attr(
+				'button',
+				'next-slide',
+				'home-hero',
+				'componentButton'
+			); ?>"
 		>
 			&#8250;
 		</button>
@@ -56,16 +67,34 @@ $theme_url = get_template_directory_uri();
 					class="active"
 					aria-label="Go to slide 1"
 					aria-current="true"
+					data-track="<?php echo university_program_track_attr(
+						'button',
+						'slide-1',
+						'home-hero',
+						'componentButton'
+					); ?>"
 				></button>
 
 				<button
 					type="button"
 					aria-label="Go to slide 2"
+					data-track="<?php echo university_program_track_attr(
+						'button',
+						'slide-2',
+						'home-hero',
+						'componentButton'
+					); ?>"
 				></button>
 
 				<button
 					type="button"
 					aria-label="Go to slide 3"
+					data-track="<?php echo university_program_track_attr(
+						'button',
+						'slide-3',
+						'home-hero',
+						'componentButton'
+					); ?>"
 				></button>
 
 			</div>
@@ -76,7 +105,6 @@ $theme_url = get_template_directory_uri();
 		</div>
 	</section>
 
-	<!-- Careers section -->
 	<section class="careers" id="careers">
 		<div class="container">
 
@@ -108,7 +136,16 @@ $theme_url = get_template_directory_uri();
 						type specimen book.
 					</p>
 
-					<a class="yellow" href="#programmes">
+					<a
+						class="yellow"
+						href="#programmes"
+						data-track="<?php echo university_program_track_attr(
+							'link',
+							'careers-see-more',
+							'home-careers',
+							'componentLink'
+						); ?>"
+					>
 						See More
 					</a>
 				</div>
@@ -117,7 +154,6 @@ $theme_url = get_template_directory_uri();
 		</div>
 	</section>
 
-	<!-- Programmes section -->
 	<section class="home-programmes" id="programmes">
 		<div class="container">
 
@@ -143,7 +179,15 @@ $theme_url = get_template_directory_uri();
 							adipiscing elit. Vestibulum ante tortor.
 						</p>
 
-						<a href="<?php echo esc_url( home_url( '/programmes/undergraduate/' ) ); ?>">
+						<a
+							href="<?php echo esc_url( home_url( '/programmes/undergraduate/' ) ); ?>"
+							data-track="<?php echo university_program_track_attr(
+								'link',
+								'home-undergraduate',
+								'home-programmes',
+								'componentCard'
+							); ?>"
+						>
 							See More <span>→</span>
 						</a>
 					</div>
@@ -166,7 +210,15 @@ $theme_url = get_template_directory_uri();
 							adipiscing elit. Vestibulum ante tortor.
 						</p>
 
-						<a href="<?php echo esc_url( home_url( '/programmes/postgraduate/' ) ); ?>">
+						<a
+							href="<?php echo esc_url( home_url( '/programmes/postgraduate/' ) ); ?>"
+							data-track="<?php echo university_program_track_attr(
+								'link',
+								'home-postgraduate',
+								'home-programmes',
+								'componentCard'
+							); ?>"
+						>
 							See More <span>→</span>
 						</a>
 					</div>
