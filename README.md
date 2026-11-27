@@ -88,7 +88,7 @@ events from different elements.
 {"timestamp":"2026-11-27T13:23:01+00:00","page_url":"\/wordpress\/programmes\/","payload":{"type":"click","event":"link","link":{"label":"program-card"},"content_data":{"sectionName":"programme-listing","uiComponent":"componentCard"}}}
 {"timestamp":"2026-11-27T13:26:43+00:00","page_url":"\/wordpress\/programmes\/","payload":{"type":"click","event":"link","link":{"label":"program-card"},"content_data":{"sectionName":"programme-listing","uiComponent":"componentCard"}}}
 {"timestamp":"2026-11-27T13:26:48+00:00","page_url":"\/wordpress\/programmes\/bachelor-of-business\/","payload":{"type":"click","event":"link","link":{"label":"apply-now"},"content_data":{"sectionName":"programme-overview","uiComponent":"componentLink"}}}
-
+{"timestamp":"2026-11-27T17:55:03+00:00","page_url":"\/wordpress\/programmes\/","payload":{"type":"click","event":"link","link":{"label":"program-card"},"content_data":{"sectionName":"programme-listing","uiComponent":"componentCard"}}}
 ## Design and assumptions
 
 - A classic theme was chosen for familiar PHP templates and custom
